@@ -1,0 +1,24 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # or 'master'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Replace Formspree URL
+        run: |
+          find . -name "script.js" -exec sed -i "s|@@FORM_ENDPOINT@@|${{ secrets.FORMSPREE_URL }}|g" {} +
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./  # Adjust if your build output is in a different folder
